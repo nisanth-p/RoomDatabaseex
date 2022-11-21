@@ -8,15 +8,20 @@ import com.neltech.databaseexample.screen.BookScreen
 import com.neltech.databaseexample.screen.Screens
 import com.neltech.databaseexample.screen.UpdateScreen
 
+private const val TAG = "MyNavGraph"
+
 //3
 @Composable
-fun MyNavGraph(navControler: NavHostController) {
-    NavHost(navController = navControler, startDestination = Screens.Book.route) {
+fun MyNavGraph(navHostControler: NavHostController) {
+    NavHost(navController = navHostControler, startDestination = Screens.Book.route) {
         composable(route = Screens.Book.route) {
-            BookScreen() { id ->
-                navControler.navigate("${Screens.Update.route}/${id}")
 
-            }
+            BookScreen(
+                navigateToUpdateBookScreen = { bookId ->
+
+                }, navController = navHostControler
+            )
+
         }
         composable(route = Screens.Update.route) {
             UpdateScreen()

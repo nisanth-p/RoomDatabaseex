@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.neltech.databaseexample.model.BookModel
 import com.neltech.databaseexample.repo.ListBooks
 import kotlinx.coroutines.job
@@ -26,7 +27,8 @@ import kotlinx.coroutines.job
 @Composable
 fun BookScreen(
     viewModel: BookViewModel = hiltViewModel(),
-    navigateToUpdateBookScreen: (id: Int) -> Unit
+    navigateToUpdateBookScreen: (id: Int) -> Unit,
+    navController: NavController
 ) {
     val books by viewModel.books.collectAsState(
         initial = mutableListOf<BookModel>(BookModel(1, "Android", 99), BookModel(1, "Kotlin", 199))
@@ -45,17 +47,18 @@ fun BookScreen(
             BooksContent(padding, books,
 
                 onDeleteBook = {
-
+                    viewModel.deleteBook(it)
                 },
                 navigateToUpdateBookScreen = { id ->
-                    navigateToUpdateBookScreen(id)
+                  //  navigateToUpdateBookScreen(id)
+                    navController.navigate(route = Screens.Update.route)
                 })
             AddBooksAlertBoxContent(padding,
                 viewModel.openDialog,
                 closeDialog = {
                     viewModel.closeDialog()
                 }, addBook = {
-
+                    viewModel.addBook(it)
                 })
         }
 
@@ -74,7 +77,8 @@ fun AddBookFloatingActionButton(addBookButtonClick: () -> Unit) {
 @ExperimentalMaterialApi
 fun BooksContent(
     padding: PaddingValues, books: ListBooks,
-    onDeleteBook: (book: BookModel) -> Unit, navigateToUpdateBookScreen: (id: Int) -> Unit
+    onDeleteBook: (book: BookModel) -> Unit,
+    navigateToUpdateBookScreen: (id: Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -125,7 +129,7 @@ fun BookCard(
         ) {
             Column {
                 Text(
-                    text = "book.name",
+                    text = book.name,
                     color = Color.DarkGray,
                     fontSize = 25.sp
                 )
@@ -141,6 +145,7 @@ fun BookCard(
             )
             IconButton(onClick = {
                 onDelete()
+
             }) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = "delete")
             }
@@ -151,8 +156,10 @@ fun BookCard(
 @Composable
 @ExperimentalMaterialApi
 fun AddBooksAlertBoxContent(
-    padding: PaddingValues, openDialog: Boolean, closeDialog: () -> Unit,
-    addBook: (book: BookViewModel) -> Unit
+    padding: PaddingValues,
+    openDialog: Boolean,
+    closeDialog: () -> Unit,
+    addBook: (book: BookModel) -> Unit
 ) {
     if (openDialog) {
         var title by remember { mutableStateOf("") }
@@ -165,7 +172,7 @@ fun AddBooksAlertBoxContent(
 
                     closeDialog()
                     val book = BookModel(0, name = title, price = rupees.toInt())
-
+                    addBook(book)
 
                 }) {
                     Text(text = "Yes")
@@ -188,7 +195,7 @@ fun AddBooksAlertBoxContent(
                         },
                         placeholder = {
                             Text(
-                                text = "BOOK_TITLE"
+                                text = "BOOK TITLE"
                             )
                         },
                         modifier = Modifier.focusRequester(focusRequester)

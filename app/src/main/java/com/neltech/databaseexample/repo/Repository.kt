@@ -29,7 +29,7 @@ interface Repository {
     }
 
     override fun deleteBook(book: BookModel) {
-        TODO("Not yet implemented")
+     dao.delete(book)
     }
 
 }
