@@ -24,7 +24,10 @@ fun MyNavGraph(navHostControler: NavHostController) {
 
         }
         composable(route = Screens.Update.route) {
-            UpdateScreen()
+
+            UpdateScreen(  bookId =0,navigateBack = {
+                navHostControler.popBackStack()
+            })
         }
     }
 }

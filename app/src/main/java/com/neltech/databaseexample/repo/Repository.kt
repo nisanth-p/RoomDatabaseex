@@ -25,7 +25,7 @@ interface Repository {
     }
 
     override fun updateBook(book: BookModel) {
-        TODO("Not yet implemented")
+        dao.update(book)
     }
 
     override fun deleteBook(book: BookModel) {

@@ -14,6 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
+    var book by mutableStateOf(BookModel(0, "", 0))
+        private set
     val books = repo.getBook()
     var openDialog by mutableStateOf(false)
     fun openDialog() {
@@ -31,5 +33,21 @@ class BookViewModel @Inject constructor(private val repo: Repository) : ViewMode
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteBook(bookModel)
         }
+    }
+
+    fun updateTitle(name: String) {
+        book = book.copy(
+            name = name
+        )
+    }
+
+    fun updateAuthor(price: String) {
+        book = book.copy(
+            price = price.toInt()
+        )
+    }
+
+    fun updateBook(book: BookModel) = viewModelScope.launch(Dispatchers.IO) {
+        repo.updateBook(book)
     }
 }
