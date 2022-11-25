@@ -1,5 +1,6 @@
 package com.neltech.databaseexample.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,7 +32,7 @@ fun BookScreen(
     navController: NavController
 ) {
     val books by viewModel.books.collectAsState(
-        initial = mutableListOf<BookModel>(BookModel(1, "Android", 99), BookModel(1, "Kotlin", 199))
+        initial = emptyList()
     )
     Scaffold(
         topBar = {},
@@ -49,9 +50,10 @@ fun BookScreen(
                 onDeleteBook = {
                     viewModel.deleteBook(it)
                 },
-                navigateToUpdateBookScreen = { id ->
-                  //  navigateToUpdateBookScreen(id)
-                    navController.navigate(route = Screens.Update.route)
+                navigateToUpdateBookScreen = { bookId ->
+                   navigateToUpdateBookScreen(bookId)
+                 //   navController.navigate(route = Screens.Update.route)
+                   // navController.navigate("${Screens.Update.route}/${bookId}")
                 })
             AddBooksAlertBoxContent(padding,
                 viewModel.openDialog,
@@ -85,8 +87,9 @@ fun BooksContent(
             .fillMaxWidth()
             .padding(padding)
     ) {
-        items(books) { book ->
 
+        items(books) { book ->
+            Log.d(TAG, "BooksContent: "+book)
             BookCard(book, onDelete = {
                 onDeleteBook(book)
             }, navigateToUpdateBookScreen = { id ->
@@ -98,7 +101,7 @@ fun BooksContent(
         }
     }
 }
-
+private  val TAG = "BookScreen"
 @Composable
 @ExperimentalMaterialApi
 fun BookCard(
@@ -106,6 +109,7 @@ fun BookCard(
     onDelete: () -> Unit,
     navigateToUpdateBookScreen: (id: Int) -> Unit
 ) {
+    Log.d(TAG, "BookCard: "+book)
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier

@@ -1,10 +1,12 @@
 package com.neltech.databaseexample.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,6 +20,9 @@ fun UpdateScreen(
     bookId: Int,
     navigateBack: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.getBook(bookId)
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,14 +47,16 @@ fun UpdateScreen(
         content = { padding ->
             UpdateBookContent(padding, viewModel.book,
                 updateTitle = {
-                    viewModel.updateTitle(it)
-                },
-                updatePrrice = {
+
                     if (it.isNotEmpty())
+                       viewModel.updateTitle(it)
+                },
+                updatePrice = {
+
                        viewModel.updateAuthor(it)
                 },
                 updateBook = {
-                    if (it!=null)
+
                     viewModel.updateBook(it)
                 },
                 navigateBack = {
@@ -60,17 +67,17 @@ fun UpdateScreen(
         }
     )
 }
-
+private  val TAG = "UpdateScreen"
 @Composable
 fun UpdateBookContent(
     padding: PaddingValues,
     book: BookModel,
     updateTitle: (title: String) -> Unit,
-    updatePrrice: (price: String) -> Unit,
+    updatePrice: (price: String) -> Unit,
     updateBook: (book: BookModel) -> Unit,
     navigateBack: () -> Unit
 ) {
-
+    Log.d(TAG, "UpdateBookContent: "+book)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +102,9 @@ fun UpdateBookContent(
         TextField(
             value = book.price.toString(),
             onValueChange = { price ->
-                updatePrrice(price)
+                book.price =price.toInt()
+                Log.d(TAG, "UpdateBookContent: "+price)
+                updatePrice(price)
             },
             placeholder = {
                 Text(

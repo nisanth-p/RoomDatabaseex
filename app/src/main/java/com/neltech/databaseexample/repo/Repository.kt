@@ -11,6 +11,7 @@ typealias ListBooks = List<BookModel>
 interface Repository {
     fun addBook(book: BookModel)
     fun getBook(): Flow<ListBooks>
+    fun getBook(id:Int): BookModel
     fun updateBook(book: BookModel)
     fun deleteBook(book: BookModel)
 }
@@ -24,7 +25,11 @@ interface Repository {
         return dao.get()
     }
 
-    override fun updateBook(book: BookModel) {
+     override fun getBook(id: Int): BookModel {
+return dao.getBook(id = id)
+     }
+
+     override fun updateBook(book: BookModel) {
         dao.update(book)
     }
 

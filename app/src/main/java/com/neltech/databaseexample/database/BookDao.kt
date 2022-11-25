@@ -15,4 +15,7 @@ interface BookDao {
     fun delete(book: BookModel)
     @Query("SELECT * FROM androidbook ORDER BY id ASC")
     fun get():Flow<ListBooks>
+
+    @Query("SELECT * FROM androidbook WHERE id = :id")
+    fun getBook(id: Int): BookModel
 }

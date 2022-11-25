@@ -7,5 +7,5 @@ data class BookModel(
     @PrimaryKey(autoGenerate = true)
     val id:Int,
     val name:String,
-    val price:Int
+    var price:Int
 )
